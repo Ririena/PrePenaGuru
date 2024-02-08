@@ -43,7 +43,7 @@ export default function userController(app) {
 
       const token = app.jwt.sign({ userId: user.id });
 
-      res.send({ token, username: user.username, lol: "asdasd" });
+      res.send({ token, username: user.username, lol: "asdasd", jenis_user: user.jenis_user});
     } catch (error) {
       console.log(error);
       res.status(500).send({ error: "Internal Server Error" });
@@ -62,28 +62,28 @@ export default function userController(app) {
     }
   });
 
+  // app.post("/user/profile", async (req, res) => {
+  //   try {
+  //     await req.jwtVerify();
 
-  app.post("user/profile", async(req,res) => {
-    try{
-      await req.jwtVerify()
+  //     const { jenis_user, lol } = req.body;
 
-      const { jenis_user, lol} = req.body
+  //     const { userId } = req.user;
 
-      const { userId } = req.user
+  //     const user = await User.findOne({ where: { id: userId } });
 
-      const user = await User.findOne({where: {id: userId}})
+  //     if (!user) {
+  //       return res
+  //         .status(404)
+  //         .send({ error: "User Not Found" || "404 Not Found" });
+  //     }
+  //     await user.update({ jenis_user, lol });
+  //     res.send({ message: "Mantap" });
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // });
 
-      if(!user) {
-        return res.status(404).send({error: "User Not Found" || "404 Not Found"})
-
-      }
-      await user.update({jenis_user, lol})
-      res.send({message: "Mantap"})
-    } catch(error) {
-      console.error(error)
-    }
-  })
- 
   app.post("/user/motto", async (req, res) => {
     try {
       await req.jwtVerify();
@@ -109,19 +109,30 @@ export default function userController(app) {
     }
   });
 
-  app.get("/user-data", async (req, res) => {
+  app.post("/user/profile", async (req, res) => {
     try {
       await req.jwtVerify();
 
-      const user = req.user;
+      const { jenis_user, username } = req.body;
 
-      const userData = await User.findOne({
-        where: { username: user.username },
-      });
+      const { userId } = req.user;
 
-      res.send(userData);
+      const user = await User.findOne({ where: { id: userId } });
+
+      if (!user) {
+        return res.status(404).send({ error: "User Not Found" });
+      }
+
+      const validUserTypes = ["guru", "tata_usaha", "piket"];
+      if (!validUserTypes.includes(jenis_user)) {
+        return res.status(400).send({ error: "Invalid Tipe User" });
+      }
+      await user.update({ jenis_user, username });
+
+      res.send({ message: "Profile Update Succesfully" });
     } catch (error) {
-      res.status(401).send({ error: "Unauthorized" });
+      console.error("Failed", error);
+      res.status(500).send({ error: "Internal Server Error" });
     }
   });
 
@@ -152,37 +163,6 @@ export default function userController(app) {
       res.status(500).send({ error: "Registration failed" });
     }
   });
-
-  //  app.post("/register", async (req, res) => {
-  //   const { username, password } = req.body;
-
-  //   try {
-  //     // Validasi data
-  //     if (!username || !password) {
-  //       return res
-  //         .status(400)
-  //         .send({ error: "Username and password are required" });
-  //     }
-
-  //     // Periksa apakah pengguna sudah terdaftar dalam database
-  //     const existingUser = await User.findOne({ where: { username } });
-  //     if (existingUser) {
-  //       return res.status(400).send({ error: "Username already exists" });
-  //     }
-
-  //     // Hash password
-  //     const hashedPassword = await bcrypt.hash(password, 10);
-
-  //     // Simpan pengguna baru ke database
-  //     const newUser = await User.create({ username, password: hashedPassword });
-
-  //     // Kirim respons berhasil
-  //     res.status(201).send({ message: "User registered successfully" });
-  //   } catch (error) {
-  //     console.error("Registration failed:", error);
-  //     res.status(500).send({ error: "Registration failed" });
-  //   }
-  // });
 
   app.get("/user/:id", async (req, res) => {
     var dataSatu = await User.findOne({ where: { id: req.params.id } });
