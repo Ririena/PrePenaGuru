@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import Link from "next/link";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -32,10 +33,12 @@ export default function Home() {
     <>
       {session ? (
         <>
+        <Link href="/profile">TEST</Link>
           <p>Signed As {session.user.username}</p>
           <p>Motto is {session.user.lol}</p>
           {/* Tombol untuk memperbarui motto */}
           <button onClick={updateMotto}>Update Motto</button>
+          <div className="loading"></div>
         </>
       ) : (
         <p>User Tidak Sign In</p>

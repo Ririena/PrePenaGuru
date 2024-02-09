@@ -9,13 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/next-js": "^2.2.0",
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
     "@fastify/jwt": "^8.0.0",
+    "@nextui-org/react": "^2.2.9",
     "auth": "^1.0.2",
     "axios": "^1.6.7",
+    "framer-motion": "^11.0.3",
     "next": "^14.1.0",
     "next-auth": "^4.24.5",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-icons": "^5.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",
